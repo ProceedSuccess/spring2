@@ -1,0 +1,238 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: root
+          password: 123123
+
+  - changeSet:
+      id: 1
+      author: sergey_petukhov
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(512)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(50)
+              - column:
+                  name: last_name
+                  type: varchar(50)
+              - column:
+                  name: email
+                  type: varchar(50)
+
+  - changeSet:
+      id: 2
+      author: sergey_petukhov
+      changes:
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_name
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: articul
+                  type: int
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+              - column:
+                  name: description
+                  type: varchar(250)
+
+  - changeSet:
+      id: 3
+      author: sergey_petukhov
+      changes:
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: category_name
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+  - changeSet:
+      id: 4
+      author: sergey_petukhov
+      changes:
+        - createTable:
+            tableName: product_category
+            columns:
+              - column:
+                  name: product_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_product_id
+                    references: product(id)
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_category_id
+                    references: category(id)
+                    nullable: false
+
+  - changeSet:
+      id: 5
+      author: sergey_petukhov
+      comment: "Create admin user"
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: "admin"
+              - column:
+                  name: password
+                  value: "$2a$10$uedJ6jkBS08x5mxZY6gV6.LAKSd202CiVutxz5VDq3TIyj9alkmIq"
+
+  - changeSet:
+      id: 6
+      author: sergey_petukhov
+      comment: "Create client user"
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: "client"
+              - column:
+                  name: password
+                  value: "$2y$12$AHY9YoA3HV4PrFaIbfhYgeL0Ath9v/BQG0dT.jCi54OVbDtGzKqMe"
+  - changeSet:
+      id: 7
+      author: sergey_petukhov
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+  - changeSet:
+      id: 8
+      author: sergey_petukhov
+      comment: "Create default user roles"
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: "ROLE_ADMIN"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: "ROLE_CLIENT"
+
+
+  - changeSet:
+      id: 9
+      author: sergey_petukhov
+      changes:
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_user_id
+                    references: users(id)
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_role_id
+                    references: roles(id)
+                    nullable: false
+
+  - changeSet:
+      id: 10
+      author: sergey_petukhov
+      comment: "Assign CLIENT role to client user"
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: role_id
+                  value: 2
+
+  - changeSet:
+      id: 11
+      author: sergey_petukhov
+      comment: "Assign ADMIN role to admin user"
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 1
