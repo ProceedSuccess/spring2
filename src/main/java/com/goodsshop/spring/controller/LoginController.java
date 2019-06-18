@@ -39,9 +39,11 @@ public class LoginController {
         if (user.getUserName().equals("admin") & user.getPassword().equals("admin")){
             return "admin/index";
         }
+        ////
 //        User u = new User();
 //        u.setUserName(user.getUserName());
 //        model.addAttribute("user",u);
+//        userService.save(user);
         return "index";
     }
 }
